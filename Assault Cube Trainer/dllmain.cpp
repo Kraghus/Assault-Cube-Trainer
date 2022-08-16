@@ -168,8 +168,8 @@ DWORD WINAPI HackThread(HMODULE hModule)
             // If toggled on, player speed is doubled
             // Each intitial key press takes into account additional key presses to make strafing possible
             // BUGGED: Sometimes forward movement "sticks" and will need an addition keystroke to stop the player
-            // BUGGED: Seems to happen only with the following combo: Hold W, Hold D, Release W, Release D
-            // BUGGED: While strafing, the other toggles seem to stop working, see ammo & health
+            // BUGGED: Seems to happen with the following combo: Hold W, Hold D, Release W, Release D
+            // BUGGED: While two movement buttons are held down at once, continuous writes stop writing
             if (bSpeed)
             {
                 while (GetKeyState('W') & 0x8000)
