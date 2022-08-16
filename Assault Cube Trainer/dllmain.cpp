@@ -136,7 +136,7 @@ DWORD WINAPI HackThread(HMODULE hModule)
         Entity* localPlayer{ *(Entity**)(moduleBaseAddress + 0x10F4F4) };
         uintptr_t* localPlayerPtr{ (uintptr_t*)(moduleBaseAddress + 0x10F4F4) };
 
-        // If the player object point exists...
+        // If the player object pointer exists...
         if (localPlayer)
         {
             // If toggled on, continously write player object health and armor
@@ -166,21 +166,21 @@ DWORD WINAPI HackThread(HMODULE hModule)
             }
 
             // If toggled on, player speed is doubled
+            // Each intitial key press takes into account additional key presses to make strafing possible
             // BUGGED: Sometimes forward movement "sticks" and will need an addition keystroke to stop the player
             // BUGGED: Seems to happen only with the following combo: Hold W, Hold D, Release W, Release D
-            // BUGGED: While infinite ammo is toggled on, ammo will decrease while player is strafing
+            // BUGGED: While strafing, the other toggles seem to stop working, see ammo & health
             if (bSpeed)
             {
                 while (GetKeyState('W') & 0x8000)
                 {
-                    localPlayer->playerSpeed = (0x0000'0002);
+                    localPlayer->playerSpeed = (0x0000'0002);      
                     while (GetKeyState('W') == 0)
                     {
                         localPlayer->playerSpeed = 0;
                         break;
                     }
-
-                   while (GetKeyState('A') & 0x8000)
+                    while (GetKeyState('A') & 0x8000)
                     {
                         localPlayer->playerSpeed = (0x0000'0002 + 0x0000'0200);
                         if ((GetKeyState('W') == 0) || (GetKeyState('A') == 0))
@@ -189,19 +189,17 @@ DWORD WINAPI HackThread(HMODULE hModule)
                             break;
                         }
                     }
-
-                   while (GetKeyState('D') & 0x8000)
-                   {
-                       localPlayer->playerSpeed = (0x0000'0002 + 0x0000'FE00);
-                       if ((GetKeyState('W') == 0) || (GetKeyState('D') == 0))
-                       {
-                           localPlayer->playerSpeed = 0;
-                           break;
-                       }
-                   }
+                    while (GetKeyState('D') & 0x8000)
+                    {
+                        localPlayer->playerSpeed = (0x0000'0002 + 0x0000'FE00);
+                        if ((GetKeyState('W') == 0) || (GetKeyState('D') == 0))
+                        {
+                            localPlayer->playerSpeed = 0;
+                            break;
+                        }
+                    }
                     break;
                 }
-
 
                 while (GetKeyState('A') & 0x8000)
                 {
@@ -211,6 +209,25 @@ DWORD WINAPI HackThread(HMODULE hModule)
                         localPlayer->playerSpeed = 0;
                         break;
                     }
+                    while (GetKeyState('W') & 0x8000)
+                    {
+                        localPlayer->playerSpeed = (0x0000'0200 + 0x0000'0002);
+                        if ((GetKeyState('A') == 0) || (GetKeyState('W') == 0))
+                        {
+                            localPlayer->playerSpeed = 0;
+                            break;
+                        }
+                    }
+                    while (GetKeyState('S') & 0x8000)
+                    {
+                        localPlayer->playerSpeed = (0x0000'0200 + 0x0000'00FE);
+                        if ((GetKeyState('A') == 0) || (GetKeyState('S') == 0))
+                        {
+                            localPlayer->playerSpeed = 0;
+                            break;
+                        }
+                    }
+                    break;
                 }
 
                 while (GetKeyState('D') & 0x8000)
@@ -221,6 +238,25 @@ DWORD WINAPI HackThread(HMODULE hModule)
                         localPlayer->playerSpeed = 0;
                         break;
                     }
+                    while (GetKeyState('W') & 0x8000)
+                    {
+                        localPlayer->playerSpeed = (0x0000'FE00 + 0x0000'0002);
+                        if ((GetKeyState('D') == 0) || (GetKeyState('W') == 0))
+                        {
+                            localPlayer->playerSpeed = 0;
+                            break;
+                        }
+                    }
+                    while (GetKeyState('S') & 0x8000)
+                    {
+                        localPlayer->playerSpeed = (0x0000'FE00 + 0x0000'00FE);
+                        if ((GetKeyState('D') == 0) || (GetKeyState('S') == 0))
+                        {
+                            localPlayer->playerSpeed = 0;
+                            break;
+                        }
+                    }
+                    break;
                 }
 
                 while (GetKeyState('S') & 0x8000)
@@ -231,6 +267,25 @@ DWORD WINAPI HackThread(HMODULE hModule)
                         localPlayer->playerSpeed = 0;
                         break;
                     }
+                    while (GetKeyState('A') & 0x8000)
+                    {
+                        localPlayer->playerSpeed = (0x0000'00FE + 0x0000'0200);
+                        if ((GetKeyState('S') == 0) || (GetKeyState('A') == 0))
+                        {
+                            localPlayer->playerSpeed = 0;
+                            break;
+                        }
+                    }
+                    while (GetKeyState('D') & 0x8000)
+                    {
+                        localPlayer->playerSpeed = (0x0000'00FE + 0x0000'FE00);
+                        if ((GetKeyState('S') == 0) || (GetKeyState('D') == 0))
+                        {
+                            localPlayer->playerSpeed = 0;
+                            break;
+                        }
+                    }
+                    break;
                 }
             }
         }
