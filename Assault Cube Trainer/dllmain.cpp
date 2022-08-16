@@ -21,6 +21,13 @@ public:
     };
 };
 
+struct Vector3
+{
+    float x{ 0 };
+    float y{ 0 };
+    float z{ 0 };
+};
+
 class Entity
 {
 public:
@@ -28,7 +35,7 @@ public:
     {
         //               Type     Name   Offset
         //DEFINE_MEMBER_N(Vector3, posHead, 0x4);
-        //DEFINE_MEMBER_N(Vector3, posPlayer, 0x0034);
+        DEFINE_MEMBER_N(Vector3, posPlayer, 0x0034);
         //DEFINE_MEMBER_N(Vector3, viewAngle, 0x0040);
         DEFINE_MEMBER_N(int, playerHealth, 0x00F8);
         DEFINE_MEMBER_N(int, playerArmor, 0x00FC);
@@ -57,6 +64,7 @@ DWORD WINAPI HackThread(HMODULE hModule)
     bool bAmmo{ false };
     bool bNoRecoil{ false };
     bool bSpeed{ false };
+    bool bSuperJump{ false };
     
     // Main program loop, will run intil END is pressed or until the user closes the program
     while (true)
@@ -98,7 +106,7 @@ DWORD WINAPI HackThread(HMODULE hModule)
             }
         }
 
-        // Infinite Ammo toggle
+        // No Recoil toggle
         if (GetAsyncKeyState(VK_NUMPAD3) & 1)
         {
             bNoRecoil = !bNoRecoil;
@@ -129,6 +137,21 @@ DWORD WINAPI HackThread(HMODULE hModule)
             else
             {
                 std::cout << "DOUBLE SPEED has been toggled OFF.\n";
+            }
+        }
+
+        // Super Jump (jump height x 2) toggle
+        if (GetAsyncKeyState(VK_NUMPAD5) & 1)
+        {
+            bSuperJump = !bSuperJump;
+
+            if (bSuperJump)
+            {
+                std::cout << "SUPER JUMP has been toggled ON.\n";
+            }
+            else
+            {
+                std::cout << "SUPER JUMP has been toggled OFF.\n";
             }
         }
 
@@ -286,6 +309,14 @@ DWORD WINAPI HackThread(HMODULE hModule)
                         }
                     }
                     break;
+                }    
+            }
+
+            if (bSuperJump)
+            {
+                if (GetKeyState(VK_SPACE) & 0x8000)
+                {
+                    localPlayer->posPlayer.z = localPlayer->posPlayer.z + 0.07;
                 }
             }
         }
