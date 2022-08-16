@@ -36,7 +36,7 @@ public:
         //               Type     Name   Offset
         //DEFINE_MEMBER_N(Vector3, posHead, 0x4);
         DEFINE_MEMBER_N(Vector3, posPlayer, 0x0034);
-        //DEFINE_MEMBER_N(Vector3, viewAngle, 0x0040);
+        DEFINE_MEMBER_N(Vector3, viewAngle, 0x0040);
         DEFINE_MEMBER_N(int, playerHealth, 0x00F8);
         DEFINE_MEMBER_N(int, playerArmor, 0x00FC);
         DEFINE_MEMBER_N(int, playerSpeed, 0x0080);
@@ -65,6 +65,8 @@ DWORD WINAPI HackThread(HMODULE hModule)
     bool bNoRecoil{ false };
     bool bSpeed{ false };
     bool bSuperJump{ false };
+    bool bNoCollision{ false };
+    bool bSetCoords{ false };
     
     // Main program loop, will run intil END is pressed or until the user closes the program
     while (true)
@@ -152,6 +154,36 @@ DWORD WINAPI HackThread(HMODULE hModule)
             else
             {
                 std::cout << "SUPER JUMP has been toggled OFF.\n";
+            }
+        }
+
+        // No collision toggle
+        if (GetAsyncKeyState(VK_NUMPAD6) & 1)
+        {
+            bNoCollision = !bNoCollision;
+
+            if (bNoCollision)
+            {
+                std::cout << "NO COLLISION has been toggled ON.\n";
+            }
+            else
+            {
+                std::cout << "NO COLLISION has been toggled OFF.\n";
+            }
+        }
+
+        // Set coordinates
+        if (GetAsyncKeyState(VK_NUMPAD7) & 1)
+        {
+            bSetCoords = !bSetCoords;
+
+            if (bSetCoords)
+            {
+                std::cout << "PLAYER COORDINATES HAVE BEEN SET.\n";
+            }
+            else
+            {
+                std::cout << "PLAYER COORDINATES HAVE BEEN ERASED.\n";
             }
         }
 
@@ -312,13 +344,50 @@ DWORD WINAPI HackThread(HMODULE hModule)
                 }    
             }
 
+            // If toggled on, player jumps higher
             if (bSuperJump)
             {
                 if (GetKeyState(VK_SPACE) & 0x8000)
                 {
-                    localPlayer->posPlayer.z = localPlayer->posPlayer.z + 0.07;
+                    localPlayer->posPlayer.z = localPlayer->posPlayer.z + static_cast<float>(0.065);
                 }
             }
+
+            // If toggled on, player floats through walls, floors, ceilings, etc
+            if (bNoCollision)
+            {
+                // Goes to the address of the collision function and patches the bytes with 0x90 NOP instructions
+                Nop((BYTE*)(moduleBaseAddress + 0x5B189), 2);
+            }
+            else
+            {
+                // Writes back the original collision function when toggled off
+                Patch((BYTE*)(moduleBaseAddress + 0x5B189), (BYTE*)"\x74\x57", 2);
+            }
+
+            // Sets players current coordinate values and stores them in "temp" variables
+            if (bSetCoords)
+            {
+                static float posX = localPlayer->posPlayer.x;
+                static float posY = localPlayer->posPlayer.y;
+                static float posZ = localPlayer->posPlayer.z;
+
+                static float viewX = localPlayer->viewAngle.x;
+                static float viewY = localPlayer->viewAngle.y;
+                static float viewZ = localPlayer->viewAngle.z;
+
+                // If player presses 8, teleports to the stored coordinates
+                if (GetKeyState(VK_NUMPAD8) & 0x8000)
+                {
+                    localPlayer->posPlayer.x = posX;
+                    localPlayer->posPlayer.y = posY;
+                    localPlayer->posPlayer.z = posZ;
+
+                    localPlayer->viewAngle.x = viewX;
+                    localPlayer->viewAngle.y = viewY;
+                    localPlayer->viewAngle.z = viewZ;
+                }
+            }            
         }
         // Sleep for 5ms for performance purposes
         Sleep(5);
