@@ -166,6 +166,9 @@ DWORD WINAPI HackThread(HMODULE hModule)
             }
 
             // If toggled on, player speed is doubled
+            // BUGGED: Sometimes forward movement "sticks" and will need an addition keystroke to stop the player
+            // BUGGED: Seems to happen only with the following combo: Hold W, Hold D, Release W, Release D
+            // BUGGED: While infinite ammo is toggled on, ammo will decrease while player is strafing
             if (bSpeed)
             {
                 while (GetKeyState('W') & 0x8000)
