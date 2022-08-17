@@ -7,10 +7,10 @@ Includes:
 2) Infinite Ammo
 3) No Recoil
 4) 2x Player Speed (BUGGY)
-5) 2x Jump Height (Coming Soon)
-6) No Collision (Coming Soon)
-7) Set Coorinates (Coming Soon)
-8) Teleport to Coordinates (Coming Soon)
+5) Super Jump
+6) No Clip/Ghost Mode
+7) Set Coorinates (BUGGY)
+8) Teleport to Coordinates
 9) 1 Shot Kills (Coming Soon)
 
 Will add a command line interface after all functionality has been implemented.
