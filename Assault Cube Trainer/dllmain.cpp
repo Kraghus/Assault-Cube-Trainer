@@ -191,6 +191,8 @@ DWORD WINAPI HackThread(HMODULE hModule)
         Entity* localPlayer{ *(Entity**)(moduleBaseAddress + 0x10F4F4) };
         uintptr_t* localPlayerPtr{ (uintptr_t*)(moduleBaseAddress + 0x10F4F4) };
 
+
+
         // If the player object pointer exists...
         if (localPlayer)
         {
@@ -365,29 +367,40 @@ DWORD WINAPI HackThread(HMODULE hModule)
                 Patch((BYTE*)(moduleBaseAddress + 0x5B189), (BYTE*)"\x74\x57", 2);
             }
 
-            // Sets players current coordinate values and stores them in "temp" variables
+            // Sets players current coordinate/view angle values and stores them in "temp" variables
             if (bSetCoords)
             {
-                static float posX = localPlayer->posPlayer.x;
-                static float posY = localPlayer->posPlayer.y;
-                static float posZ = localPlayer->posPlayer.z;
+                float posX = localPlayer->posPlayer.x;
+                float posY = localPlayer->posPlayer.y;
+                float posZ = localPlayer->posPlayer.z;
 
-                static float viewX = localPlayer->viewAngle.x;
-                static float viewY = localPlayer->viewAngle.y;
-                static float viewZ = localPlayer->viewAngle.z;
+                float viewX = localPlayer->viewAngle.x;
+                float viewY = localPlayer->viewAngle.y;
+                float viewZ = localPlayer->viewAngle.z;
 
-                // If player presses 8, teleports to the stored coordinates
-                if (GetKeyState(VK_NUMPAD8) & 0x8000)
+                // Set bSetCoords to false so the next loop is called
+                bSetCoords = !bSetCoords;
+                while (!bSetCoords)
                 {
-                    localPlayer->posPlayer.x = posX;
-                    localPlayer->posPlayer.y = posY;
-                    localPlayer->posPlayer.z = posZ;
+                    // If player presses 8, player teleports to the stored coordinates
+                    if (GetKeyState(VK_NUMPAD8) & 0x8000)
+                    {
+                        localPlayer->posPlayer.x = posX;
+                        localPlayer->posPlayer.y = posY;
+                        localPlayer->posPlayer.z = posZ;
 
-                    localPlayer->viewAngle.x = viewX;
-                    localPlayer->viewAngle.y = viewY;
-                    localPlayer->viewAngle.z = viewZ;
+                        localPlayer->viewAngle.x = viewX;
+                        localPlayer->viewAngle.y = viewY;
+                        localPlayer->viewAngle.z = viewZ;
+                    }
+                    // If player presses 7, saved coords are "erased" because the loop to set coords will start again
+                    if (GetKeyState(VK_NUMPAD7) & 0x8000)
+                    {
+                        bSetCoords = true;
+                        break;
+                    }
                 }
-            }            
+            }
         }
         // Sleep for 5ms for performance purposes
         Sleep(5);
