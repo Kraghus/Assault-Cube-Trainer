@@ -67,6 +67,7 @@ DWORD WINAPI HackThread(HMODULE hModule)
     bool bSuperJump{ false };
     bool bNoCollision{ false };
     bool bSetCoords{ false };
+    bool bOneShotKills{ false };
     
     // Main program loop, will run intil END is pressed or until the user closes the program
     while (true)
@@ -377,6 +378,9 @@ DWORD WINAPI HackThread(HMODULE hModule)
                 float viewX = localPlayer->viewAngle.x;
                 float viewY = localPlayer->viewAngle.y;
                 float viewZ = localPlayer->viewAngle.z;
+
+                std::cout << "Coordinates set to: " << posX << ", " << posY << ", " << posZ << "\n";
+                Sleep(500);
 
                 // Set bSetCoords to false so the next loop is called
                 bSetCoords = !bSetCoords;
