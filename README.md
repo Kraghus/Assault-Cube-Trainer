@@ -16,8 +16,6 @@ Includes toggles for:
 
 Press [END] to exit the trainer.
 
----
-
 Will add a command line interface after all functionality has been implemented.
 
 This is my first attempt at developing a basic trainer. I chose assault cube because it's an old game that is relatively easy to reverse engineer.
