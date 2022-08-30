@@ -3,25 +3,16 @@ Works for v1.2.0.2
 
 Includes toggles for:
 
-[NUMPAD 1] Max Stats + Invincibility
-
-[NUMPAD 2] Infinite Ammo
-
-[NUMPAD 3] No Recoil
-
-[NUMPAD 4] 2x Player Speed (BUGGY)
-
-[NUMPAD 5] Super Jump
-
-[NUMPAD 6] No Clip/Ghost Mode
-
-[NUMPAD 7] Set Coorinates (BUGGY)
-
-[NUMPAD 8] Teleport to Coordinates
-
-[NUMPAD 9] 1 Shot Kills (Coming Soon)
-
-[INSERT]   Triggerbot
+[NUMPAD 1] Max Stats + Invincibility  
+[NUMPAD 2] Infinite Ammo  
+[NUMPAD 3] No Recoil  
+[NUMPAD 4] 2x Player Speed (BUGGY)  
+[NUMPAD 5] Super Jump  
+[NUMPAD 6] No Clip/Ghost Mode  
+[NUMPAD 7] Set Coorinates (BUGGY)  
+[NUMPAD 8] Teleport to Coordinates  
+[NUMPAD 9] 1 Shot Kills (Coming Soon)  
+[INSERT]   Triggerbot  
 
 Press [END] to exit the trainer.
 
