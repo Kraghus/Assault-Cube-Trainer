@@ -16,7 +16,7 @@ Includes toggles for:
 
 Press [END] to exit the trainer.
 
---------------------------------------------------------------------------------------------------------------------------------------------------
+---
 
 Will add a command line interface after all functionality has been implemented.
 
