@@ -3,47 +3,11 @@
 #include <iostream>
 #include <TlHelp32.h>
 #include <Windows.h>
+#include "entity.h"
 #include "mem.h"
 
-#define STR_MERGE_IMPL(a, b) a##b
-#define STR_MERGE(a, b) STR_MERGE_IMPL(a, b)
-#define MAKE_PAD(size) STR_MERGE(_pad, __COUNTER__)[size]
-#define DEFINE_MEMBER_N(type, name, offset) struct {unsigned char MAKE_PAD(offset); type name;}
-
-
-class weaponClass
-{
-public:
-    union {
-        //               Type     Name   Offset
-        DEFINE_MEMBER_N(int, currentWeaponPointer, 0x0004);
-        DEFINE_MEMBER_N(int*, currentAmmoPointer, 0x0014);
-    };
-};
-
-struct Vector3
-{
-    float x{ 0 };
-    float y{ 0 };
-    float z{ 0 };
-};
-
-class Entity
-{
-public:
-    union
-    {
-        //               Type     Name   Offset
-        //DEFINE_MEMBER_N(Vector3, posHead, 0x4);
-        DEFINE_MEMBER_N(Vector3, posPlayer, 0x0034);
-        DEFINE_MEMBER_N(Vector3, viewAngle, 0x0040);
-        DEFINE_MEMBER_N(int, playerHealth, 0x00F8);
-        DEFINE_MEMBER_N(int, playerArmor, 0x00FC);
-        DEFINE_MEMBER_N(int, playerSpeed, 0x0080);
-        DEFINE_MEMBER_N(int, playerGrenades, 0x0158);
-        DEFINE_MEMBER_N(weaponClass*, weaponPointer, 0x0374);
-    };
-};
+typedef Entity* (__cdecl* T_GetCrosshairEntity)();
+T_GetCrosshairEntity getCrosshairEntity{ nullptr };
 
 DWORD WINAPI HackThread(HMODULE hModule)
 {
@@ -59,6 +23,8 @@ DWORD WINAPI HackThread(HMODULE hModule)
     uintptr_t moduleBaseAddress{ (uintptr_t)(GetModuleHandle(L"ac_client.exe")) };
     std::cout << "The module base address was located at: " << moduleBaseAddress << "\n";
 
+    getCrosshairEntity = (T_GetCrosshairEntity)(moduleBaseAddress + 0x607C0);
+
     // Define variables for toggles, false because they are set to off by default
     bool bHealth{ false };
     bool bAmmo{ false };
@@ -68,6 +34,7 @@ DWORD WINAPI HackThread(HMODULE hModule)
     bool bNoCollision{ false };
     bool bSetCoords{ false };
     bool bOneShotKills{ false };
+    bool bTriggerbot{ false };
     
     // Main program loop, will run intil END is pressed or until the user closes the program
     while (true)
@@ -77,6 +44,21 @@ DWORD WINAPI HackThread(HMODULE hModule)
         {
             std::cout << "DLL has been ejected.\n";
             break;
+        }
+
+        // Triggerbot toggle
+        if (GetAsyncKeyState(VK_INSERT) & 1)
+        {
+            bTriggerbot = !bTriggerbot;
+
+            if (bTriggerbot)
+            {
+                std::cout << "TRIGGERBOT is ACTIVE.\n";
+            }
+            else
+            {
+                std::cout << "TRIGGERBOT is INACTIVE.\n";
+            }
         }
 
         // Max Health & Armor + Invincibility toggle
@@ -192,8 +174,6 @@ DWORD WINAPI HackThread(HMODULE hModule)
         Entity* localPlayer{ *(Entity**)(moduleBaseAddress + 0x10F4F4) };
         uintptr_t* localPlayerPtr{ (uintptr_t*)(moduleBaseAddress + 0x10F4F4) };
 
-
-
         // If the player object pointer exists...
         if (localPlayer)
         {
@@ -220,6 +200,29 @@ DWORD WINAPI HackThread(HMODULE hModule)
                 else // If the player is holding a grenade...
                 {
                     *localPlayer->weaponPointer->currentAmmoPointer = 5;
+                }
+            }
+
+            // If toggled on, activate a triggerbot that shoots when the crosshair is pointing at an enemy player
+            if (bTriggerbot)
+            {
+                // Call the "GetCrosshairEntity" function from the game, returns a bool
+                Entity* crosshairEntity{getCrosshairEntity()};
+                
+                // If the crosshair is pointed at an entity...
+                if (crosshairEntity)
+                {
+                    // And if that entity is not on the same team as the player...
+                    if (localPlayer->teamNumber != crosshairEntity->teamNumber)
+                    {
+                        // Start shooting
+                        localPlayer->bAttacking = 1;
+                    }
+                }
+                // If the crosshair is not pointed at an entity, don't shoot
+                else
+                {
+                    localPlayer->bAttacking = 0;
                 }
             }
 
