@@ -1,17 +1,20 @@
 # Assault Cube Trainer
 Works for v1.2.0.2
 
-Includes:
+Includes toggles for:
 
-1) Max Stats + Invincibility
-2) Infinite Ammo
-3) No Recoil
-4) 2x Player Speed (BUGGY)
-5) Super Jump
-6) No Clip/Ghost Mode
-7) Set Coorinates (BUGGY)
-8) Teleport to Coordinates
-9) 1 Shot Kills (Coming Soon)
+[NUMPAD 1] Max Stats + Invincibility  
+[NUMPAD 2] Infinite Ammo  
+[NUMPAD 3] No Recoil  
+[NUMPAD 4] 2x Player Speed (BUGGY)  
+[NUMPAD 5] Super Jump  
+[NUMPAD 6] No Clip/Ghost Mode  
+[NUMPAD 7] Set Coorinates (BUGGY)  
+[NUMPAD 8] Teleport to Coordinates  
+[NUMPAD 9] 1 Shot Kills (Coming Soon)  
+[INSERT]   Triggerbot  
+
+Press [END] to exit the trainer.
 
 Will add a command line interface after all functionality has been implemented.
 
