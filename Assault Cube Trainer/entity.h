@@ -5,18 +5,6 @@
 #include <vector>
 #include <Windows.h>
 
-//class AmmoPtr
-//{
-//public:
-//	int32_t ammo; //0x0000
-//}; //Size: 0x0004
-//
-//class N000005A0
-//{
-//public:
-//	int32_t N000005A1; //0x0000
-//}; //Size: 0x0004
-
 
 #define STR_MERGE_IMPL(a, b) a##b
 #define STR_MERGE(a, b) STR_MERGE_IMPL(a, b)
